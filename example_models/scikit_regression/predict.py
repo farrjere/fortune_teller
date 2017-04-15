@@ -27,5 +27,6 @@ def get_data_frame(inx):
         return pd.read_json(inx, typ='series')
 
 if __name__ == "__main__":
-    inx = get_data_frame(sys.argv[1])
-    predict(inx)
+  inx = get_data_frame(sys.argv[1])
+  prediction = predict(inx)
+  print(pd.json.dumps(prediction),end='')

@@ -1,32 +1,34 @@
 from datetime import datetime
 from docker.models.images import Image
 from docker.errors import ImageNotFound
-
-import sys 
-sys.path.append('..')
-from model import Model
-
+import json
+from models.models import Model
 import unittest
 from unittest.mock import patch
 
 class ModelTest(unittest.TestCase):
 
 	def test_id(self):
-		id = 1
 		model = Model(1, 'alpine')
 		self.assertEqual(1, model.id)
-		def set_name():
+		def set_id():
 			model.id = 2
-		self.assertRaises(AttributeError, set_name)
+		self.assertRaises(AttributeError, set_id)
+
+		def create_bad_model():
+			model = Model('A bad id', 'alpine')
+
+		self.assertRaises(AssertionError, create_bad_model)
+
 
 	def test_image(self):
-		model = Model('Model', 'alpine')
+		model = Model(1, 'alpine')
 		self.assertEqual('alpine', model.image_name)
 		self.assertIsInstance(model.image, Image)
 		
 		#Check that we get an error when we try to use a non-existant image
 		def create_bad_model():
-			Model('Model', 'notanimage')
+			Model(1, 'notanimage')
 		self.assertRaises(ImageNotFound, create_bad_model)
 
 		#Validate that image_name is read only
@@ -49,7 +51,7 @@ class ModelTest(unittest.TestCase):
 		# 	self.assertEqual(dt, model.create_time)
 
 		dt = datetime(2017, 3, 1)
-		model = Model('Model', 'alpine', dt)
+		model = Model(1, 'alpine', dt)
 		self.assertEqual(dt, model.create_time)
 
 		def set_create_time():
@@ -57,7 +59,7 @@ class ModelTest(unittest.TestCase):
 		self.assertRaises(AttributeError, set_create_time)		
 
 	def test_input_description(self):
-		model = Model('Model', 'alpine')
+		model = Model(1, 'alpine')
 		self.assertEqual(0, len(model.input_desc))
 
 		model.input_desc = {
@@ -67,8 +69,15 @@ class ModelTest(unittest.TestCase):
 		self.assertIsInstance(model.input_desc, dict)
 		self.assertEqual(2, len(model.input_desc))
 
-	def test_commands(self):
-		pass
+	def test_predict(self):
+		model = Model(1, 'sk_regression')
+		
+		with open('example_models/scikit_regression/example_input.json') as input:
+			input_val = input.read()
+
+		results = model.predict(input_val)
+		self.assertTrue(len(results) > 0)
+		self.assertEqual(results, '[[7.3434953766],[7.4932207581],[7.5390592989]]')
 
 if __name__ == '__main__':
     unittest.main()
