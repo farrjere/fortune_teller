@@ -7,28 +7,26 @@ import unittest
 from unittest.mock import patch
 
 class ModelTest(unittest.TestCase):
-
 	def test_id(self):
-		model = Model(1, 'alpine')
+		model = Model(_id=1, _image_name='alpine')
 		self.assertEqual(1, model.id)
 		def set_id():
 			model.id = 2
 		self.assertRaises(AttributeError, set_id)
 
 		def create_bad_model():
-			model = Model('A bad id', 'alpine')
+			model = Model(_id='A bad id', _image_name='alpine')
 
 		self.assertRaises(AssertionError, create_bad_model)
 
-
 	def test_image(self):
-		model = Model(1, 'alpine')
+		model = Model(_id=1, _image_name='alpine')
 		self.assertEqual('alpine', model.image_name)
 		self.assertIsInstance(model.image, Image)
 		
 		#Check that we get an error when we try to use a non-existant image
 		def create_bad_model():
-			Model(1, 'notanimage')
+			Model(_id=1, _image_name='notanimage')
 		self.assertRaises(ImageNotFound, create_bad_model)
 
 		#Validate that image_name is read only
@@ -42,16 +40,11 @@ class ModelTest(unittest.TestCase):
 		self.assertRaises(AttributeError, set_image)
 
 	def test_create_time(self):
-		#Need to fix this so that patching dates is correct
-		# with patch('model.datetime') as mock_dt:
-		# 	dt = datetime(2017, 1, 1)
-		# 	mock_dt.datetime.now.return_value = dt
-		# 	mock_dt.side_effect = lambda *args, **kw: datetime(*args, **kw)
-		# 	model = Model('Model', 'alpine')
-		# 	self.assertEqual(dt, model.create_time)
+		model = Model(_id=1, _image_name='alpine')
+		self.assertTrue(model.create_time != None)
 
 		dt = datetime(2017, 3, 1)
-		model = Model(1, 'alpine', dt)
+		model = Model(_id=1, _image_name='alpine', _create_time=dt)
 		self.assertEqual(dt, model.create_time)
 
 		def set_create_time():
@@ -59,7 +52,7 @@ class ModelTest(unittest.TestCase):
 		self.assertRaises(AttributeError, set_create_time)		
 
 	def test_input_description(self):
-		model = Model(1, 'alpine')
+		model = Model(_id=1, _image_name='alpine')
 		self.assertEqual(0, len(model.input_desc))
 
 		model.input_desc = {
@@ -70,7 +63,7 @@ class ModelTest(unittest.TestCase):
 		self.assertEqual(2, len(model.input_desc))
 
 	def test_predict(self):
-		model = Model(1, 'sk_regression')
+		model = Model(_id=1, _image_name='sk_regression')
 		
 		with open('example_models/scikit_regression/example_input.json') as input:
 			input_val = input.read()

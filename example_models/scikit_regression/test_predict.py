@@ -3,6 +3,13 @@ import predict
 class TestPredict(unittest.TestCase):
 
     def test_predict_single_row(self):
+        input_json = """{"color":"Color","director_name":"Gore Verbinski","num_critic_for_reviews":302.0,"duration":169.0,"director_facebook_likes":563.0,"actor_3_facebook_likes":1000.0,"a
+ctor_2_name":"Orlando Bloom","actor_1_facebook_likes":40000.0,"gross":309404152.0,"genres":"Action|Adventure|Fantasy","actor_1_name":"Johnny Depp","movie_title":"Pir
+ates of the Caribbean: At World\'s End\\u00a0","num_voted_users":471220,"cast_total_facebook_likes":48350,"actor_3_name":"Jack Davenport","facenumber_in_poster":0.0,
+"plot_keywords":"goddess|marriage ceremony|marriage proposal|pirate|singapore","movie_imdb_link":"http:\\/\\/www.imdb.com\\/title\\/tt0449088\\/?ref_=fn_tt_tt_1","nu
+m_user_for_reviews":1238.0,"language":"English","country":"USA","content_rating":"PG-13","budget":300000000.0,"title_year":2007.0,"actor_2_facebook_likes":5000.0,"im
+db_score":7.1,"aspect_ratio":2.35,"movie_facebook_likes":0}"""
+        
         pass
 
     def test_predict_multiple_rows(self):

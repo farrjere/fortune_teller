@@ -1,0 +1,5 @@
+DATABASE_TYPE = 'postgres'
+DATABASE_NAME = 'flash'
+DATABASE_HOST = 'localhost'
+DATABASE_USER = 'flash'
+DATABASE_PASSWORD = 'flash'
