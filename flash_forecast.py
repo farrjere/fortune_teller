@@ -3,29 +3,23 @@ from sanic.response import text
 import os
 import asyncio
 import uvloop
-import aiopg
 from sqlalchemy.ext.declarative import declarative_base
-from aiopg.sa import create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models.models import Project, Model
-Base = declarative_base()
 
 app = Sanic(__name__)
 app.config.from_pyfile('config.py')
+
 connection = ''
 
 @app.listener('before_server_start')
 async def setup_db(app, loop):
-	if(app.config.DATABASE_TYPE == 'postgres'):
-		connection ='postgres://{0}:{1}@{2}/{3}'.format(app.config.DATABASE_USER,
-                                                 app.config.DATABASE_PASSWORD,
-                                                 app.config.DATABASE_HOST,
-                                                 app.config.DATABASE_NAME)
-		app.engine = await create_engine(connection)
-		await Base.metadata.create_all(app.engine)
-		#sessionmaker(bind=app.engine)
-	else:
-		pass
+	from models.models import Project, Model
+	app.engine = create_engine(app.config.DATABASE_CONNECTION, echo=True)
+	Base = declarative_base()
+	Base.metadata.create_all(app.engine)
+	app.Session = sessionmaker(bind=app.engine)
 
 @app.route('/')
 async def root(request):
@@ -33,9 +27,9 @@ async def root(request):
 
 @app.route('/projects')
 async def projects(request):
-	session = Session()
+	session = app.Session()
 	projects = []
-	async for project in session.query(Project):
+	for project in session.query(Project):
 		projects.append(project)
 	return json({"projects": projects})
 

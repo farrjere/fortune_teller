@@ -1,5 +1,3 @@
-DATABASE_TYPE = 'postgres'
-DATABASE_NAME = 'flash'
-DATABASE_HOST = 'localhost'
-DATABASE_USER = 'flash'
-DATABASE_PASSWORD = 'flash'
+#sql alchemy connection in the form: dialect+driver://username:password@host:port/database
+#DATABASE_CONNECTION = 'postgresql://flash:flash@localhost/flash'
+DATABASE_CONNECTION = 'sqlite:///:memory:'
